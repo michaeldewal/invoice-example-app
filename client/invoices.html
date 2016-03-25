@@ -1,0 +1,24 @@
+<template name="invoicestemplate">
+    <div class="container">
+        <h1>Invoices</h1>
+    </div>
+    <button class="today">Today</button>
+    <button class="week">Week</button>
+    <button class="month">Month</button>
+    <button class="all">All</button>
+    <button class="generate">GENERATE</button>
+    <table>
+        <thead>
+        <tr>
+            <th class="filterInvoiceNr">Invoice Nr.</th>
+            <th class="filterTotal">total</th>
+            <th class="filterCreatedAt">createdAt</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each invoices}}
+            {{> invoice}}
+        {{/each}}
+        </tbody>
+    </table>
+</template>

@@ -1,0 +1,1 @@
+invoices = new Mongo.Collection("invoices");
