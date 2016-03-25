@@ -1,15 +1,16 @@
+
 if(Meteor.isClient) {
-    console.log("invoices.js")
+    invoices = new Mongo.Collection("invoices");
     Template.invoicestemplate.helpers({
         invoices: function() {
-            let filter = Session.get("invoiceFilter", {});
-            let sort = Session.get("invoiceSort", {});
+            console.log("invoices helper")
+            let filter = Session.get("invoiceFilter");
+            let sort = Session.get("invoiceSort");
             if(!filter) {
                 filter = {};
             }
-            console.log(sort);
+            Meteor.subscribe("invoiceCollection", filter, sort);
             if(sort) {
-                console.log("sorting", filter, sort);
                 return invoices.find(filter, {sort: sort});
             }
 
@@ -36,7 +37,7 @@ if(Meteor.isClient) {
             Session.set("invoiceFilter", {
                 createdAt: {
                     '$gte': morning,
-                    '$lt': evening,
+                    '$lt': evening
                 }
             });
         },
@@ -45,8 +46,8 @@ if(Meteor.isClient) {
             var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
             Session.set("invoiceFilter", {
                 createdAt: {
-                    '$gte': new Date(lastWeek.toISOString()),
-                    '$lt': new Date(today.toISOString())
+                    '$gte': lastWeek,
+                    '$lt': today
                 }
             });
         },
@@ -55,8 +56,8 @@ if(Meteor.isClient) {
             var lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
             Session.set("invoiceFilter", {
                 createdAt: {
-                    '$gte': new Date(lastMonth.toISOString()),
-                    '$lt': new Date(today.toISOString())
+                    '$gte': lastMonth,
+                    '$lt': today
                 }
             });
         },
@@ -64,7 +65,6 @@ if(Meteor.isClient) {
             Session.set("invoiceFilter", {});
         },
         'click .generate': function() {
-            console.log("generating data");
             var total = 100;
             for(var i=0;i<total;i++) {
 
@@ -81,55 +81,47 @@ if(Meteor.isClient) {
             }
         },
         'click .filterInvoiceNr': function() {
-            console.log("filter nr")
             let sort = Session.get("invoiceSort", {});
-            if(!sort) {
-                sort = {
-
-                };
-            }
+            let newSort = {};
             if(sort)
             {
                 if(sort.invoiceNr === 1) {
-                    sort["invoiceNr"] = -1;
+                    newSort["invoiceNr"] = -1;
                 } else {
-                    sort["invoiceNr"] = 1;
+                    newSort["invoiceNr"] = 1;
                 }
             }
-            Session.set("invoiceSort", sort);
+            Session.set("invoiceSort", newSort);
         },
         'click .filterTotal': function() {
             console.log("filter total")
             let sort = Session.get("invoiceSort", {});
-            if(!sort) {
-                sort = {};
-            }
+            let newSort = {};
             if(sort)
             {
                 if(sort.total === 1) {
-                    sort["total"] = -1;
+                    newSort["total"] = -1;
                 } else {
-                    sort["total"] = 1;
+                    newSort["total"] = 1;
                 }
             }
-            Session.set("invoiceSort", sort);
+            Session.set("invoiceSort", newSort);
         },
         'click .filterCreatedAt': function() {
             console.log("filter date")
 
             let sort = Session.get("invoiceSort", {});
-            if(!sort) {
-                sort = {};
-            }
+            let newSort = {};
+
             if(sort)
             {
                 if(sort.createdAt === 1) {
-                    sort["createdAt"] = -1;
+                    newSort["createdAt"] = -1;
                 } else {
-                    sort["createdAt"] = 1;
+                    newSort["createdAt"] = 1;
                 }
             }
-            Session.set("invoiceSort", sort);
+            Session.set("invoiceSort", newSort);
         }
     });
 }
