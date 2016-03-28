@@ -1,127 +1,101 @@
+Meteor.startup(function(){
+    invoices.initialize();
+});
 
-if(Meteor.isClient) {
-    invoices = new Mongo.Collection("invoices");
-    Template.invoicestemplate.helpers({
-        invoices: function() {
-            console.log("invoices helper")
-            let filter = Session.get("invoiceFilter");
-            let sort = Session.get("invoiceSort");
-            if(!filter) {
-                filter = {};
-            }
-            Meteor.subscribe("invoiceCollection", filter, sort);
-            if(sort) {
-                return invoices.find(filter, {sort: sort});
-            }
+invoices = new Mongo.Collection("invoices");
+invoices.byTimeRange = function() {
+    const timeRange = FlowRouter.getParam('type') || 'all';
+    const sortParams = FlowRouter.current().queryParams;
+    const sort = {};
+    for (let k in sortParams) {
+        sort[k.replace('sort', '').firstToType('lower')] = (sortParams[k] === 'DESC')?-1:1;
+    }
 
-            return invoices.find(filter);
+    let selectedDate;
+    const today = new Date();
+    switch(timeRange) {
+        case 'today':
+            selectedDate = today;
+            selectedDate.setSeconds(0);
+            selectedDate.setHours(0);
+            selectedDate.setMinutes(0);
+            break;
+        case 'week':
+            selectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+            break;
+        case 'month':
+            selectedDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+            break;
+        default:
+            selectedDate = false;
+            break;
+    }
+
+    const filter = (selectedDate !== false)?{ createdAt: { '$gte': selectedDate }}:{};
+
+    Session.set("invoiceFilter", filter);
+    Session.set("invoiceSort", sort);
+};
+
+invoices.goRoute = function(route) {
+    const param = FlowRouter.getQueryParam(route);
+    const params = FlowRouter.current().queryParams;
+    params[route] = (param && param === 'ASC')?'DESC':'ASC';
+    FlowRouter.go('/:type', FlowRouter.current().params, params);
+    invoices.byTimeRange();
+};
+
+invoices.initialize = function() {
+    if(!FlowRouter.getParam('type') && FlowRouter.current().params == {})
+        FlowRouter.setQueryParams({sortCreatedAt: 'DESC', sortTotal: 'ASC'});
+    invoices.byTimeRange();
+};
+
+Template.invoicestemplate.helpers({
+    invoices: function() {
+        const filter = Session.get("invoiceFilter") || {};
+        const sort = Session.get("invoiceSort") || false;
+
+        Meteor.subscribe("invoiceCollection", filter, sort);
+        if(sort) {
+            return invoices.find(filter, {sort: sort});
         }
-    });
 
-    Template.registerHelper('formatDate', function(date) {
-        return moment(date).format('DD-MM-YYYY');
-    });
+        return invoices.find(filter);
+    }
+});
 
-    Template.invoicestemplate.events({
-        'click .today': function() {
-            var morning = new Date();
-            morning.setSeconds(0);
-            morning.setHours(0);
-            morning.setMinutes(0);
+Template.registerHelper('formatDate', function(date) {
+    return moment(date).format('DD-MM-YYYY');
+});
 
-            var evening = new Date();
-            evening.setSeconds(59);
-            evening.setHours(23);
-            evening.setMinutes(59);
-
-            Session.set("invoiceFilter", {
-                createdAt: {
-                    '$gte': morning,
-                    '$lt': evening
-                }
-            });
-        },
-        'click .week': function() {
-            var today = new Date();
-            var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-            Session.set("invoiceFilter", {
-                createdAt: {
-                    '$gte': lastWeek,
-                    '$lt': today
-                }
-            });
-        },
-        'click .month': function() {
-            var today = new Date();
-            var lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-            Session.set("invoiceFilter", {
-                createdAt: {
-                    '$gte': lastMonth,
-                    '$lt': today
-                }
-            });
-        },
-        'click .all': function() {
-            Session.set("invoiceFilter", {});
-        },
-        'click .generate': function() {
-            var total = 100;
-            for(var i=0;i<total;i++) {
-
-                var curDate = new Date().getTime();
-                var lastMonthDate = new Date();
-                lastMonthDate.setMonth(lastMonthDate.getMonth()-1);
-                lastMonthDate = lastMonthDate.getTime();
-
-                invoices.insert({
-                    invoiceNr: Math.floor(Math.random() * (1000000 + 1)),
-                    total: Math.floor(Math.random() * (100000 + 1)),
-                    createdAt: new Date(lastMonthDate + Math.random() * (curDate - lastMonthDate))
-                });
-            }
-        },
-        'click .filterInvoiceNr': function() {
-            let sort = Session.get("invoiceSort", {});
-            let newSort = {};
-            if(sort)
-            {
-                if(sort.invoiceNr === 1) {
-                    newSort["invoiceNr"] = -1;
-                } else {
-                    newSort["invoiceNr"] = 1;
-                }
-            }
-            Session.set("invoiceSort", newSort);
-        },
-        'click .filterTotal': function() {
-            console.log("filter total")
-            let sort = Session.get("invoiceSort", {});
-            let newSort = {};
-            if(sort)
-            {
-                if(sort.total === 1) {
-                    newSort["total"] = -1;
-                } else {
-                    newSort["total"] = 1;
-                }
-            }
-            Session.set("invoiceSort", newSort);
-        },
-        'click .filterCreatedAt': function() {
-            console.log("filter date")
-
-            let sort = Session.get("invoiceSort", {});
-            let newSort = {};
-
-            if(sort)
-            {
-                if(sort.createdAt === 1) {
-                    newSort["createdAt"] = -1;
-                } else {
-                    newSort["createdAt"] = 1;
-                }
-            }
-            Session.set("invoiceSort", newSort);
-        }
-    });
-}
+Template.invoicestemplate.events({
+    'click .today': function() {
+        FlowRouter.go('/today');
+        invoices.byTimeRange();
+    },
+    'click .week': function() {
+        FlowRouter.go('/week');
+        invoices.byTimeRange();
+    },
+    'click .month': function() {
+        FlowRouter.go('/month');
+        invoices.byTimeRange();
+    },
+    'click .all': function() {
+        FlowRouter.go('/');
+        invoices.byTimeRange();
+    },
+    'click .generate': function() {
+        Meteor.call('generateInvoices');
+    },
+    'click .filterInvoiceNr': function() {
+        invoices.goRoute('sortInvoiceNr');
+    },
+    'click .filterTotal': function() {
+        invoices.goRoute('sortTotal');
+    },
+    'click .filterCreatedAt': function() {
+        invoices.goRoute('sortCreatedAt');
+    }
+});
