@@ -1,13 +1,9 @@
-invoices = new Mongo.Collection("invoices");
-Meteor.publish("invoiceCollection", function(filter, sort){
-    if(sort) {
-        return invoices.find(filter, {sort: sort});
-    }
-
-    return invoices.find(filter);
+Meteor.publish("invoiceCollection", function(filter, params){
+    return invoices.byTimeRange(filter, params);
 });
 
-Meteor.methods({generateInvoices: function() {
+Meteor.methods({
+    generateInvoices: function() {
     const total = 100;
     for(let i=0;i<total;i++) {
 
