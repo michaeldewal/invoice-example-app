@@ -1,24 +1,26 @@
-<template name="invoicestemplate">
+<template name="invoicesTemplate">
     <div class="container">
         <h1>Invoices</h1>
     </div>
-    <button class="today">Today</button>
-    <button class="week">Week</button>
-    <button class="month">Month</button>
-    <button class="all">All</button>
-    <button class="generate">GENERATE</button>
-    <table>
+    <button type="button" class="btn today btn-default">Today</button>
+    <button type="button" class="btn week btn-default">Week</button>
+    <button type="button" class="btn month btn-default">Month</button>
+    <button type="button" class="btn all btn-default">All</button>
+    <button type="button" class="btn generate btn-info">GENERATE</button>
+    <button type="button" class="btn resetQuery btn-warning">Reset Filters</button>
+    <table class="table table-striped">
         <thead>
         <tr>
-            <th class="filterInvoiceNr">Invoice Nr.</th>
-            <th class="filterTotal">total</th>
-            <th class="filterCreatedAt">createdAt</th>
+            <th class="filterInvoiceNr">Invoice Nr.<span class="glyphicon glyphicon-chevron-{{direction queryParams.sortInvoiceNr}}"></span></th>
+            <th class="filterTotal">total<span class="glyphicon glyphicon-chevron-{{direction queryParams.sortTotal}}"></span></th>
+            <th class="filterCreatedAt">createdAt<span class="glyphicon glyphicon-chevron-{{direction queryParams.sortCreatedAt}}"></span></th>
         </tr>
         </thead>
         <tbody>
-        {{#each invoices}}
+        {{#each invoiceData}}
             {{> invoice}}
         {{/each}}
         </tbody>
     </table>
+    <div id="scrollForMore">Loading more...</div>
 </template>
