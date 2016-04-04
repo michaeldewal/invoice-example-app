@@ -7,6 +7,8 @@ Template.registerHelper('formatDate', function(date) {
 
 Template.invoicesTemplate.helpers({
     invoiceData: function() {
+
+        var react = Router.reactvar.get();
         return invoices.byTimeRange(Router.getParams().type, Router.getQueryParams());
     },
     direction: function(params) {
