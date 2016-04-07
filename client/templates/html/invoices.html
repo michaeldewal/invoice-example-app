@@ -22,5 +22,5 @@
         {{/each}}
         </tbody>
     </table>
-    <div id="scrollForMore">Loading more...</div>
+    {{> infiniteScrolling debounceTimer=100 increment=increment visibility=isVisible varToIncrease=increaseLimit}}
 </template>
