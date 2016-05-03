@@ -1,0 +1,14 @@
+<template name="searchBoxCustom">
+    <div class="searchBoxCustom">
+        <form>
+            {{#each data in getSelectedSearchOptions}}
+            <div class="form-group">
+                {{> searchField data=data index=@index}}
+            </div>
+        {{/each}}
+        </form>
+    </div>
+    <div class="addSearchOptions">
+        {{> addSearchOption searchAllowedData=searchAllowedData}}
+    </div>
+</template>

@@ -1,0 +1,22 @@
+.searchBoxCustom {
+    position: absolute;
+    top:0;
+    right: 0;
+    background-color: #e0e1e1;
+}
+
+.searchBoxCustom .glyphicon {
+    color: black;
+}
+
+.searchBoxCustom form {
+    width: 300px;
+}
+
+.searchBoxCustom .form-group {
+    margin-bottom: 1px;
+}
+
+.searchOptions {
+    display:none;
+}
