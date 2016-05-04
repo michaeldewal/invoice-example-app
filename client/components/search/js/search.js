@@ -36,8 +36,10 @@ TemplateController('searchBoxCustom',
       'defaultSearchOption .searchOptions'(){
         const data = this.data.searchAllowedData[0];
         const config = this.state.searchConfig();
-        config.push(data);
-        this.state.searchConfig(config);
+        if(config.length === 0) {
+          config.push(data);
+          this.state.searchConfig(config);
+        }
         Meteor.setTimeout(setFirstInputFocus, 100);
       },
       'keydown .searchBoxCustom input'(e){
