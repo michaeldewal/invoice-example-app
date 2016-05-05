@@ -15,10 +15,8 @@ TemplateController('searchField',
 Template.searchField.onRendered(()=>{
 
   $( ".datepicker" ).datepicker({
-    format: "yyyy/mm/dd",
+    format: "yyyy-mm-dd",
     autoclose: true,
-    multidate: true,
-    multidateSeparator: ",",
     calendarWeeks: true
   });
 });
