@@ -1,0 +1,18 @@
+<template name="searchField">
+    <div class="input-group">
+        {{#if isFieldType "text" data.type}}
+            <input type="text" class="form-control" placeholder="{{data.placeholder}}" name="{{data.name}}">
+        {{/if}}
+        {{#if isFieldType "number" data.type}}
+            <input type="number" class="form-control" step="{{data.step}}"  placeholder="{{data.placeholder}}" name="{{data.name}}">
+        {{/if}}
+        {{#if isFieldType "date" data.type}}
+            <input type="text" class="datepicker form-control" placeholder="{{data.placeholder}}" name="{{data.name}}">
+        {{/if}}
+            <span class="input-group-btn">
+        <button class="btn btn-secondary" type="button" name="{{index}}">
+            <span class="glyphicon glyphicon glyphicon-remove"></span>
+        </button>
+      </span>
+        </div>
+</template>
