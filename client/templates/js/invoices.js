@@ -47,7 +47,7 @@ TemplateController('invoicesTemplate', {
       Meteor.call('generateInvoices');
     },
     'click .sort'(e) {
-      Router.go('', e.currentTarget.name);
+      Router.go('', e.currentTarget.dataset.name);
     },
     'click .resetQuery'() {
       Router.resetQuery();
