@@ -2,12 +2,8 @@
     <div class="container">
         <h1>Invoices</h1>
     </div>
-    <button type="button" name="today" class="btn btn-filter today btn-default">Today</button>
-    <button type="button" name="week" class="btn btn-filter week btn-default">Week</button>
-    <button type="button" name="month" class="btn btn-filter month btn-default">Month</button>
-    <button type="button" name="all" class="btn btn-filter all btn-default">All</button>
+    {{> filterButtons buttons=getFilterButtons eventName="clickFilterButton" curActive=getActiveFilter}}
     <button type="button" class="btn generate btn-info">GENERATE</button>
-    <button type="button" class="btn resetQuery btn-warning">Reset Filters</button>
     <table class="table table-striped">
         <thead>
         <tr>
