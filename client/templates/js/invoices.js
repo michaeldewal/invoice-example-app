@@ -15,6 +15,34 @@ TemplateController('invoicesTemplate', {
         return 'down';
 
     },
+    getFilterButtons() {
+      return [
+        {
+          name: 'today',
+          label: 'Today',
+          buttonType: 'default'
+        },
+        {
+          name: 'week',
+          label: 'Week',
+          buttonType: 'default'
+        },
+        {
+          name: 'month',
+          label: 'Month',
+          buttonType: 'default'
+        },
+        {
+          name: 'all',
+          label: 'All',
+          buttonType: 'default'
+        },
+        {
+          name: 'reset',
+          label: 'Reset',
+          buttonType: 'warning'
+        }];
+    },
     searchAllowedData() {
       return [
         {
@@ -40,8 +68,8 @@ TemplateController('invoicesTemplate', {
     }
   },
   events: {
-    'click .btn-filter'(e) {
-      Router.go({type: e.currentTarget.name});
+    'clickFilterButton'(e, tpl, args) {
+      Router.go({type: args.currentTarget.name});
     },
     'click .generate'() {
       Meteor.call('generateInvoices');
