@@ -2,6 +2,10 @@ Router.setRoute('invoices');
 
 TemplateController('invoicesTemplate', {
   helpers:{
+    getActiveFilter(){
+      var react = Router.reactvar.get();
+      return Router.getParams().type;
+    },
     invoiceData(){
       var react = Router.reactvar.get();
       return invoices.byTimeRange(Router.getParams().type, Router.getQueryParams());

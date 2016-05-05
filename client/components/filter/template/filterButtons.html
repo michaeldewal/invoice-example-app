@@ -1,7 +1,7 @@
 <template name="filterButtons">
     <div class="filter-buttons">
     {{#each buttons}}
-        {{> filterButton data=this}}
+        {{> filterButton data=this active=../curActive}}
     {{/each}}
     </div>
 </template>

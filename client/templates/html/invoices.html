@@ -2,7 +2,7 @@
     <div class="container">
         <h1>Invoices</h1>
     </div>
-    {{> filterButtons buttons=getFilterButtons eventName="clickFilterButton"}}
+    {{> filterButtons buttons=getFilterButtons eventName="clickFilterButton" curActive=getActiveFilter}}
     <button type="button" class="btn generate btn-info">GENERATE</button>
     <table class="table table-striped">
         <thead>
