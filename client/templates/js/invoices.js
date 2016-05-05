@@ -28,7 +28,7 @@ TemplateController('invoicesTemplate', {
           step: 1,
           placeholder: 'Total'
         },{
-          name: 'date',
+          name: 'createdAt',
           type: 'date',
           placeholder: 'Select or type a date'
         },{

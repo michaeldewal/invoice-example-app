@@ -42,8 +42,8 @@ TemplateController('searchBoxCustom',
         }
         Meteor.setTimeout(setFirstInputFocus, 100);
       },
-      'keydown .searchBoxCustom input'(e){
-        if(e.keyCode === 13){
+      'keyup .searchBoxCustom input'(e){
+        if((e.keyCode || e.which) === 13 || e.type === 'submit'){
           let filter = [];
           $('.searchBoxCustom').find('input').each(function(){
             filter.push({name: this.name, value: this.value, type: this.type});
